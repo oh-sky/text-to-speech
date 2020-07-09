@@ -33,4 +33,4 @@ echo 'ハローワールド' > input.txt
 
 # Usecase
 
-![usecase](https://github.com/oh-sky/text-to-speech/blob/img/usecase.png)
+![usecase](https://raw.githubusercontent.com/oh-sky/text-to-speech/master/img/usecase.png)
