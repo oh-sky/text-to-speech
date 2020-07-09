@@ -30,3 +30,7 @@ touch display.txt
 
 echo 'ハローワールド' > input.txt
 ```
+
+# Usecase
+
+![usecase](https://github.com/oh-sky/text-to-speech/blob/img/usecase.png)
