@@ -1,0 +1,9 @@
+# profile name of aws-cli credential
+AWS_CLI_PROFILE = 'default'
+
+# Input text file to speech
+# It must be inside of script's working directory.
+INPUT_TEXT_FILENAME = './input.txt'
+
+# Output text of playing back speech
+DISPLAY_TEXT_FILENAME = './display.txt'
