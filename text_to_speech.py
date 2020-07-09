@@ -9,12 +9,11 @@ from watchdog.events import FileModifiedEvent
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-INPUT_TEXT_FILENAME = './input.txt'
-DISPLAY_TEXT_FILENAME = './display.txt'
+import text_to_speech_conf
 
 cue = queue.PriorityQueue()
 
-boto3_session = boto3.Session(profile_name="polly")
+boto3_session = boto3.Session(profile_name=text_to_speech_conf.AWS_CLI_PROFILE)
 polly = boto3_session.client('polly')
 
 class DictionFilesHandler(FileSystemEventHandler):
@@ -28,7 +27,7 @@ class DictionFilesHandler(FileSystemEventHandler):
             # INPUT_TEXT_FILENAMEの内容を新しいファイルにコピー
             new_text_filename = self.__copy_input_to_new_text_file()
             # INPUT_TEXT_FILENAMEの内容を空にする
-            shutil.copy('/dev/null', INPUT_TEXT_FILENAME)
+            shutil.copy('/dev/null', text_to_speech_conf.INPUT_TEXT_FILENAME)
 
             # 入力されたテキストから音声ファイルを生成
             new_speech_filename = self.__create_speech_from_text_file(new_text_filename)
@@ -41,8 +40,8 @@ class DictionFilesHandler(FileSystemEventHandler):
 
     def __is_new_text_input(self, event):
         if isinstance(event, FileModifiedEvent) \
-           and event.src_path == INPUT_TEXT_FILENAME \
-           and os.path.getsize(INPUT_TEXT_FILENAME) > 0:
+           and event.src_path == text_to_speech_conf.INPUT_TEXT_FILENAME \
+           and os.path.getsize(text_to_speech_conf.INPUT_TEXT_FILENAME) > 0:
 
             return True
 
@@ -50,7 +49,7 @@ class DictionFilesHandler(FileSystemEventHandler):
 
     def __copy_input_to_new_text_file(self):
         new_text_file = str(time.time()) + '.txt'
-        shutil.copy(INPUT_TEXT_FILENAME, new_text_file)
+        shutil.copy(text_to_speech_conf.INPUT_TEXT_FILENAME, new_text_file)
         return new_text_file
 
     def __create_speech_from_text_file(self, text_filename):
@@ -76,5 +75,5 @@ watch_dog_observer.start()
 # メインルゥティン
 while True:
     speech = cue.get()[1]
-    shutil.copy(speech['text_filename'], DISPLAY_TEXT_FILENAME)
+    shutil.copy(speech['text_filename'], text_to_speech_conf.DISPLAY_TEXT_FILENAME)
     call('afplay ' + speech['speech_filename'], shell=True)
